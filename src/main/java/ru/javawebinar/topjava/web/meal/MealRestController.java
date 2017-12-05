@@ -38,7 +38,7 @@ public class MealRestController {
     private boolean hasRights(Meal meal)
     {
         if (meal.getUserId() != AuthorizedUser.id()) {
-            log.warn("trying to change another's meal");
+            log.warn("trying to get access to another's meal");
             throw new NotFoundException("We have not found such meal");
         }
         else return true;
@@ -65,9 +65,10 @@ public class MealRestController {
     public Meal get(int id) throws NotFoundException {
         Meal meal = service.get(id);
         if (meal != null && hasRights(meal)) {
-            log.info("get {}", id);
+            log.info("get meal with id = {}", id);
+            return meal;
         }
-        return meal;
+        return null;
     }
 
     public Meal create(Meal meal) {
