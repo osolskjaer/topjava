@@ -5,7 +5,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.User;
@@ -17,14 +20,18 @@ import java.util.Collection;
 
 import static ru.javawebinar.topjava.UserTestData.ADMIN;
 
-@ContextConfiguration("classpath:spring/spring-app.xml")
+@ContextConfiguration({
+        "classpath:spring/spring-mock.xml"
+})
 @RunWith(SpringRunner.class)
+//@Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class InMemoryAdminRestControllerSpringTest {
 
     @Autowired
     private AdminRestController controller;
 
     @Autowired
+    @Qualifier("inMemoryUserRepositoryImpl")
     private InMemoryUserRepositoryImpl repository;
 
     @Before
