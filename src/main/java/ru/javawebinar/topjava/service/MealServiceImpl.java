@@ -17,7 +17,7 @@ public class MealServiceImpl implements MealService {
     private final MealRepository repository;
 
     @Autowired
-    public MealServiceImpl(@Qualifier("jdbcMealRepositoryImpl") MealRepository repository) {
+    public MealServiceImpl(MealRepository repository) {
         this.repository = repository;
     }
 
@@ -43,7 +43,8 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public Meal update(Meal meal, int userId) {
-        return checkNotFoundWithId(repository.save(meal, userId), meal.getId());
+        checkNotFoundWithId(repository.get(meal.getId(), userId), meal.getId());
+        return repository.save(meal, userId);
     }
 
     @Override

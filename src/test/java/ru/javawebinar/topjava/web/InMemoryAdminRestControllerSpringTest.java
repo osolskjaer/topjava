@@ -6,12 +6,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.repository.mock.InMemoryUserRepositoryImpl;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.user.AdminRestController;
@@ -26,6 +28,7 @@ import static ru.javawebinar.topjava.UserTestData.ADMIN;
 @RunWith(SpringRunner.class)
 //@Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class InMemoryAdminRestControllerSpringTest {
+    private static ConfigurableApplicationContext appCtx;
 
     @Autowired
     private AdminRestController controller;
@@ -34,13 +37,9 @@ public class InMemoryAdminRestControllerSpringTest {
     @Qualifier("inMemoryUserRepositoryImpl")
     private InMemoryUserRepositoryImpl repository;
 
-    @Before
-    public void setUp() throws Exception {
-        repository.init();
-    }
-
     @Test
     public void testDelete() throws Exception {
+        repository.init();
         controller.delete(UserTestData.USER_ID);
         Collection<User> users = controller.getAll();
         Assert.assertEquals(users.size(), 1);
