@@ -6,6 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.model.User;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Transactional(readOnly = true)
 public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
     @Transactional
@@ -17,4 +22,10 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
     @Override
     @Transactional
     Meal save(Meal user);
+
+    Meal findMealByIdAndUserId(int id, int userId);
+
+    List<Meal> findMealByUserIdOrderByDateTimeDesc(int userId);
+
+    List<Meal> findMealByUserIdAndDateTimeBetweenOrderByDateTimeDesc(int userId, LocalDateTime startDate, LocalDateTime endDate);
 }

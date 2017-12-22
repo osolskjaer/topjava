@@ -27,7 +27,8 @@ public class DataJpaMealRepositoryImpl implements MealRepository {
 
     @Override
     public Meal save(Meal meal, int userId) {
-        if (!meal.isNew() && get(meal.getId(), userId) == null) {
+//find out how to replace em by magic
+       if (!meal.isNew() && get(meal.getId(), userId) == null) {
             return null;
         }
         meal.setUser(em.getReference(User.class, userId));
@@ -41,26 +42,16 @@ public class DataJpaMealRepositoryImpl implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        Optional<Meal> found = crudRepository.findById(id);
-        if (found.isPresent())
-        {
-            if (found.get().getUser().getId() == userId) return found.orElse(null);
-        }
-        return null;
+        return crudRepository.findMealByIdAndUserId(id, userId);
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        return crudRepository.findAll(SORT_DATE).stream()
-                .filter(meal -> meal.getUser().getId() == userId)
-                .collect(Collectors.toList());
+        return crudRepository.findMealByUserIdOrderByDateTimeDesc(userId);
     }
 
     @Override
     public List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
-        return em.createNamedQuery(Meal.GET_BETWEEN, Meal.class)
-                .setParameter("userId", userId)
-                .setParameter("startDate", startDate)
-                .setParameter("endDate", endDate).getResultList();
+        return crudRepository.findMealByUserIdAndDateTimeBetweenOrderByDateTimeDesc(userId, startDate, endDate);
     }
 }
