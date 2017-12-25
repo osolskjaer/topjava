@@ -19,19 +19,18 @@ import java.util.stream.Collectors;
 public class DataJpaMealRepositoryImpl implements MealRepository {
     private static final Sort SORT_DATE = new Sort(Sort.Direction.DESC, "dateTime");
 
-    @PersistenceContext
-    private EntityManager em;
-
     @Autowired
     private CrudMealRepository crudRepository;
 
+    @Autowired
+    private CrudUserRepository crudUserRepository;
+
     @Override
     public Meal save(Meal meal, int userId) {
-//find out how to replace em by magic
+        meal.setUser(crudUserRepository.getOne(userId));
        if (!meal.isNew() && get(meal.getId(), userId) == null) {
             return null;
         }
-        meal.setUser(em.getReference(User.class, userId));
         return crudRepository.save(meal);
     }
 
